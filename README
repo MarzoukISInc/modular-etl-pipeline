@@ -1,0 +1,20 @@
+# 🧱 Databricks ETL Pipeline: Auto Loader + Delta Lake + DLT
+
+## 📌 Overview
+This project demonstrates a modular, production-grade ETL pipeline using **Databricks Auto Loader**, **Delta Lake**, and **Delta Live Tables (DLT)**. It ingests raw data incrementally, applies transformations across Bronze → Silver → Gold layers, and enforces data quality using DLT expectations.
+
+Designed for reusability, governance, and performance optimization, this pipeline is ideal for enterprise-grade ingestion and analytics use cases.
+
+---
+
+## 🚀 Features
+- ✅ Incremental ingestion with Auto Loader
+- 🧪 Data quality enforcement via DLT expectations
+- 🗂️ Medallion architecture: Bronze, Silver, Gold layering
+- 🔄 Streaming and batch support
+- 🔐 Unity Catalog-ready for governance
+- ⚙️ Parameterized for flexible deployment
+
+---
+
+## 📁 Folder Structure

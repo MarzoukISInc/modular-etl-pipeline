@@ -18,3 +18,90 @@ Designed for reusability, governance, and performance optimization, this pipelin
 ---
 
 ## 📁 Folder Structure
+etl-dlt-pipeline/ 
+├── notebooks/ 
+│ ├── etl_dlt_pipeline.py 
+│ └── utils_config.py 
+├── sample-data/ 
+│ └── 
+
+---
+
+## 🧪 Pipeline Breakdown
+
+### 1. Bronze Layer: Raw Ingestion
+@dlt.table(name="bronze_raw")
+def bronze_raw():
+    return (
+        spark.readStream.format("cloudFiles")
+        .option("cloudFiles.format", "json")
+        .option("cloudFiles.inferColumnTypes", "true")
+        .load("/mnt/raw-data/")
+    )
+
+@dlt.table(name="silver_cleaned")
+@dlt.expect("valid_id", "id IS NOT NULL")
+@dlt.expect_or_drop("valid_timestamp", "timestamp IS NOT NULL")
+def silver_cleaned():
+    return dlt.read("bronze_raw").dropDuplicates(["id"])
+
+---
+
+### 2. Silver Layer: Cleansing + Validation
+@dlt.table(name="silver_cleaned")
+@dlt.expect("valid_id", "id IS NOT NULL")
+@dlt.expect_or_drop("valid_timestamp", "timestamp IS NOT NULL")
+def silver_cleaned():
+    return dlt.read("bronze_raw").dropDuplicates(["id"])
+
+---
+
+### 3. Gold Layer: Aggregation
+@dlt.table(name="gold_summary")
+def gold_summary():
+    return dlt.read("silver_cleaned").groupBy("category").agg({"amount": "sum"})
+
+---
+
+### ⚙️ Configuration
+Use widgets or config files to parameterize:
+    - Source path
+    - File format
+    - Trigger mode (batch vs streaming)
+
+dbutils.widgets.text("source_path", "/mnt/raw-data/")
+source_path = dbutils.widgets.get("source_path")
+
+---
+
+### 📊 Monitoring & Lineage
+- View pipeline status in DLT UI
+- Track expectations, throughput, and latency
+- Visualize lineage across Bronze → Gold
+
+---
+
+### 🔐 Governance
+- Register tables in Unity Catalog
+- Apply role-based access controls
+- Enable audit logging and schema enforcement
+
+---
+
+### 🧰 Requirements
+- Databricks Runtime 11.3+ (for DLT support)
+- Unity Catalog (optional)
+- Sample data in JSON/CSV/Parquet format
+
+---
+
+### 🧠 Author Notes
+This pipeline is designed for:
+
+    - Hands-on mastery of Databricks ETL
+    - Client-ready demos and accelerators
+    = Productization into reusable assets
+
+Built by Ramy — Senior Data Architect & Engineer focused on high-impact delivery and strategic leverage.
+
+---
